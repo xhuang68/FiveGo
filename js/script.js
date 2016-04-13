@@ -111,87 +111,10 @@ for (var k = 0; k < count; k++) {
   whiteWin[k] = 0;
 }
 
-var stepHistory = {
-  redo_list: [],
-  undo_list: [],
-  saveState: function(steps, list, keep_redo) {
-    keep_redo = keep_redo || false;
-    if(!keep_redo) {
-      this.redo_list = [];
-    }
-    (list || this.undo_list).push(steps);
-    console.log(this.undo_list.length + ', ' + this.redo_list.length);
-  },
-  undo: function() {
-    this.restoreState(this.undo_list, this.redo_list);
-    console.log(this.undo_list.length + ', ' + this.redo_list.length);
-  },
-  redo: function() {
-    this.restoreState(this.redo_list, this.undo_list);
-    console.log(this.undo_list.length + ', ' + this.redo_list.length);
-  },
-  restoreState: function(pop, push) {
-    if(pop.length) {
-      this.saveState(canvas, push, true);
-      var restore_state = pop.pop();
-      var img = document.createElement('img');
-      img.src = restore_state;
-      // var img = new Element('img', {'src':restore_state});
-      img.crossOrigin = "*";
-      img.onload = function() {
-        ctx.clearRect(0, 0, chessboard.width, chessboard.width);
-        ctx.drawImage(img, 0, 0, chessboard.width, chessboard.width, 0, 0, chessboard.width, chessboard.width);
-      }
-    }
-}
-}
-
-var canvasHistory = {
-  redo_list: [],
-  undo_list: [],
-  saveState: function(canvas, list, keep_redo) {
-    keep_redo = keep_redo || false;
-    if(!keep_redo) {
-      this.redo_list = [];
-    }
-
-    (list || this.undo_list).push(canvas.toDataURL());
-    console.log(this.undo_list.length + ', ' + this.redo_list.length);
-  },
-  undo: function(canvas, ctx) {
-    this.restoreState(canvas, ctx, this.undo_list, this.redo_list);
-    console.log(this.undo_list.length + ', ' + this.redo_list.length);
-  },
-  redo: function(canvas, ctx) {
-    this.restoreState(canvas, ctx, this.redo_list, this.undo_list);
-    console.log(this.undo_list.length + ', ' + this.redo_list.length);
-  },
-  restoreState: function(canvas, ctx, pop, push) {
-    if(pop.length) {
-      // this.saveState(canvas, push, true);
-      var currentState = canvas.toDataURL();
-      var restore_state = pop.pop();
-      if (restore_state === currentState) {
-        push.push(restore_state);
-        restore_state = pop.pop();
-      }
-      push.push(restore_state);
-      var img = document.createElement('img');
-      img.src = restore_state;
-      // var img = new Element('img', {'src':restore_state});
-      img.crossOrigin = "*";
-      img.onload = function() {
-        ctx.clearRect(0, 0, chessboard.width, chessboard.width);
-        ctx.drawImage(img, 0, 0, chessboard.width, chessboard.width, 0, 0, chessboard.width, chessboard.width);
-      }
-    }
-  }
-}
-
 var initialChessboard;
 var bgImage = new Image(chessboard.width, chessboard.width);
 bgImage.src = "./img/bg.png";
-bgImage.crossOrigin = "*";
+// bgImage.crossOrigin = "*";
 bgImage.onload = function(event) {
   ctx.drawImage(bgImage, 0, 0, chessboard.width, chessboard.width);
   drawChessBoard();
@@ -207,14 +130,10 @@ chessboard.onclick = function(event) {
   var c = Math.floor(event.offsetY / gap);
   if ((Math.abs(event.offsetX  - (15 + r * gap)) <= 10) && (Math.abs(event.offsetY  - (15 + c * gap)) <= 10)) {
     if (chessboardMatrix[r][c] == GOTYPE.NOGO) {
-      if (canvasHistory.undo_list[canvasHistory.undo_list.length - 1] != chessboard.toDataURL()) {
-        canvasHistory.saveState(chessboard, canvasHistory.undo_list, true);
-      }
+
       drawStep(r, c);
       afterStep(r, c);
-      if (playMode == MODE.VSHUMAN) {
-        canvasHistory.saveState(chessboard, canvasHistory.undo_list, true);
-      }
+
       if (!over && playMode != MODE.VSHUMAN) {
         computerAI();
       }
@@ -296,7 +215,6 @@ function computerAI() {
   }
   drawStep(dx, dy);
   afterStep(dx, dy);
-  canvasHistory.saveState(chessboard, canvasHistory.undo_list, true);
 }
 
 function drawChessBoard() {
@@ -398,13 +316,10 @@ function reset() {
   }
   var img = document.createElement('img');
   img.src = initialChessboard;
-  img.crossOrigin = "*";
+  // img.crossOrigin = "*";
   img.onload = function() {
     ctx.clearRect(0, 0, chessboard.width, chessboard.width);
     ctx.drawImage(img, 0, 0, chessboard.width, chessboard.width, 0, 0, chessboard.width, chessboard.width);
-    canvasHistory.undo_list = [];
-    canvasHistory.redo_list = [];
-    canvasHistory.saveState(chessboard);
     if (playMode === MODE.AIFIRST) {
       drawStep(Math.floor(row / 2), Math.floor(row / 2));
       afterStep(Math.floor(row / 2), Math.floor(row / 2));
