@@ -137,7 +137,7 @@ var stepHistory = {
       var img = document.createElement('img');
       img.src = restore_state;
       // var img = new Element('img', {'src':restore_state});
-      img.crossOrigin = "*";
+      // img.crossOrigin = "*";
       img.onload = function() {
         ctx.clearRect(0, 0, chessboard.width, chessboard.width);
         ctx.drawImage(img, 0, 0, chessboard.width, chessboard.width, 0, 0, chessboard.width, chessboard.width);
@@ -179,7 +179,7 @@ var canvasHistory = {
       var img = document.createElement('img');
       img.src = restore_state;
       // var img = new Element('img', {'src':restore_state});
-      img.crossOrigin = "*";
+      // img.crossOrigin = "*";
       img.onload = function() {
         ctx.clearRect(0, 0, chessboard.width, chessboard.width);
         ctx.drawImage(img, 0, 0, chessboard.width, chessboard.width, 0, 0, chessboard.width, chessboard.width);
@@ -191,7 +191,7 @@ var canvasHistory = {
 var initialChessboard;
 var bgImage = new Image(chessboard.width, chessboard.width);
 bgImage.src = "./img/bg.png";
-bgImage.crossOrigin = "*";
+// bgImage.crossOrigin = "*";
 bgImage.onload = function(event) {
   ctx.drawImage(bgImage, 0, 0, chessboard.width, chessboard.width);
   drawChessBoard();
@@ -398,7 +398,7 @@ function reset() {
   }
   var img = document.createElement('img');
   img.src = initialChessboard;
-  img.crossOrigin = "*";
+  // img.crossOrigin = "*";
   img.onload = function() {
     ctx.clearRect(0, 0, chessboard.width, chessboard.width);
     ctx.drawImage(img, 0, 0, chessboard.width, chessboard.width, 0, 0, chessboard.width, chessboard.width);
