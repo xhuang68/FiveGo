@@ -5,6 +5,7 @@ var row = 15; // chessboard.width > gap * row
 var gap = 30;
 var goRadius = 13;
 var offset = (chessboard.width - (row - 1) * gap) / 2;
+var steps;
 var GOTYPE = {
   NOGO: 0,
   BLACK: 1,
@@ -219,7 +220,7 @@ function computerAI() {
 
 function drawChessBoard() {
   ctx.strokeStyle = "#BFBFBF";
-  for (var i = 0; i < gap; i++) {
+  for (var i = 0; i < row; i++) {
     ctx.beginPath();
     ctx.moveTo(offset, offset + gap * i);
     ctx.lineTo(chessboard.width - offset , offset + gap * i);
@@ -252,6 +253,7 @@ function drawStep(r, c) {
 }
 
 function afterStep(r, c) {
+  steps++;
   for (var k = 0; k < count; k++) {
     if (win[r][c][k]) {
       if (nextGoType === GOTYPE.BLACK) {
@@ -276,6 +278,12 @@ function afterStep(r, c) {
     }
   }
 
+  if (!over && steps === row * row) {
+    var message = document.getElementById("message");
+    message.innerHTML = "Draw!"
+    over = true;
+  }
+
   if (nextGoType === GOTYPE.BLACK) {
     chessboardMatrix[r][c] = GOTYPE.BLACK;
     nextGoType = GOTYPE.WHITE;
@@ -286,6 +294,7 @@ function afterStep(r, c) {
 }
 
 function reset() {
+  steps = 0;
   nextGoType = GOTYPE.BLACK;
   chessboardMatrix = [];
   for (var i = 0; i < row; i++) {
